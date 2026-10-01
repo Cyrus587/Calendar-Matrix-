@@ -1,0 +1,3602 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="utf-8">
+
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"
+>
+
+<meta
+  name="apple-mobile-web-app-capable"
+  content="yes"
+>
+
+<meta
+  name="apple-mobile-web-app-status-bar-style"
+  content="default"
+>
+
+<meta
+  name="theme-color"
+  content="#f4f5f7"
+>
+
+<title>
+  Reminder Drag Planner
+</title>
+
+
+<style>
+
+:root {
+
+  --bg: #f4f5f7;
+
+  --surface: #ffffff;
+
+  --surface2: #f8f8fa;
+
+  --text: #17171a;
+
+  --muted: #73737a;
+
+  --border: #dedfe4;
+
+  --accent: #0a84ff;
+
+  --accentSoft: #e6f2ff;
+
+  --danger: #d92d20;
+
+  --shadow:
+    0 2px 12px
+    rgba(0,0,0,.08);
+
+  --slot-h: 68px;
+
+  --day-w: 165px;
+
+  --time-w: 67px;
+
+}
+
+
+@media (
+  prefers-color-scheme: dark
+) {
+
+  :root {
+
+    --bg: #101012;
+
+    --surface: #1c1c1e;
+
+    --surface2: #242426;
+
+    --text: #f5f5f7;
+
+    --muted: #a6a6ad;
+
+    --border: #38383e;
+
+    --accentSoft: #11365c;
+
+    --shadow:
+      0 2px 14px
+      rgba(0,0,0,.3);
+
+  }
+
+}
+
+
+* {
+
+  box-sizing:
+    border-box;
+
+  -webkit-tap-highlight-color:
+    transparent;
+
+}
+
+
+html,
+body {
+
+  margin: 0;
+
+  min-height: 100%;
+
+  background:
+    var(--bg);
+
+  color:
+    var(--text);
+
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "SF Pro Text",
+    system-ui,
+    sans-serif;
+
+}
+
+
+button,
+input,
+textarea {
+
+  font: inherit;
+
+}
+
+
+button {
+
+  cursor: pointer;
+
+}
+
+
+.app {
+
+  min-height:
+    100vh;
+
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+}
+
+
+/* ==================================
+   TOP TOOLBAR
+================================== */
+
+.toolbar {
+
+  position:
+    sticky;
+
+  top: 0;
+
+  z-index: 100;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  gap:
+    8px;
+
+  padding:
+    max(
+      10px,
+      env(safe-area-inset-top)
+    )
+    10px
+    10px;
+
+  background:
+    rgba(
+      244,
+      245,
+      247,
+      .94
+    );
+
+  backdrop-filter:
+    blur(18px);
+
+  -webkit-backdrop-filter:
+    blur(18px);
+
+  border-bottom:
+    1px solid
+    var(--border);
+
+}
+
+
+@media (
+  prefers-color-scheme: dark
+) {
+
+  .toolbar {
+
+    background:
+      rgba(
+        16,
+        16,
+        18,
+        .94
+      );
+
+  }
+
+}
+
+
+.brand {
+
+  font-weight:
+    800;
+
+  font-size:
+    18px;
+
+  white-space:
+    nowrap;
+
+  margin-right:
+    auto;
+
+}
+
+
+.toolbar button {
+
+  border:
+    1px solid
+    var(--border);
+
+  background:
+    var(--surface);
+
+  color:
+    var(--text);
+
+  min-height:
+    38px;
+
+  padding:
+    0 11px;
+
+  border-radius:
+    10px;
+
+  font-weight:
+    650;
+
+  font-size:
+    13px;
+
+}
+
+
+.toolbar button.primary {
+
+  background:
+    var(--accent);
+
+  border-color:
+    var(--accent);
+
+  color:
+    #fff;
+
+}
+
+
+.toolbar button.danger {
+
+  color:
+    var(--danger);
+
+}
+
+
+/* ==================================
+   WORKSPACE
+================================== */
+
+.workspace {
+
+  display:
+    flex;
+
+  flex:
+    1;
+
+  min-height:
+    0;
+
+}
+
+
+/* ==================================
+   UNSCHEDULED SIDEBAR
+================================== */
+
+.sidebar {
+
+  width:
+    290px;
+
+  min-width:
+    290px;
+
+  border-right:
+    1px solid
+    var(--border);
+
+  background:
+    var(--surface2);
+
+  padding:
+    12px;
+
+  position:
+    sticky;
+
+  left:
+    0;
+
+  z-index:
+    20;
+
+  height:
+    calc(
+      100vh - 60px
+    );
+
+  overflow:
+    auto;
+
+}
+
+
+.side-head {
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    space-between;
+
+  margin-bottom:
+    8px;
+
+}
+
+
+.side-title {
+
+  font-weight:
+    800;
+
+}
+
+
+.badge {
+
+  font-size:
+    12px;
+
+  background:
+    var(--accent);
+
+  color:
+    #fff;
+
+  border-radius:
+    999px;
+
+  padding:
+    4px 8px;
+
+}
+
+
+.hint {
+
+  color:
+    var(--muted);
+
+  font-size:
+    12px;
+
+  line-height:
+    1.35;
+
+  margin-bottom:
+    10px;
+
+}
+
+
+.unscheduled {
+
+  min-height:
+    120px;
+
+  border:
+    2px dashed
+    var(--border);
+
+  border-radius:
+    14px;
+
+  padding:
+    7px;
+
+}
+
+
+.unscheduled.drag-over {
+
+  border-color:
+    var(--accent);
+
+  background:
+    var(--accentSoft);
+
+}
+
+
+/* ==================================
+   CALENDAR
+================================== */
+
+.calendar-wrap {
+
+  overflow:
+    auto;
+
+  flex:
+    1;
+
+  overscroll-behavior:
+    contain;
+
+}
+
+
+.calendar {
+
+  position:
+    relative;
+
+  display:
+    grid;
+
+  grid-template-columns:
+    var(--time-w)
+    repeat(
+      7,
+      var(--day-w)
+    );
+
+  width:
+    calc(
+      var(--time-w)
+      +
+      7 * var(--day-w)
+    );
+
+  min-width:
+    100%;
+
+  background:
+    var(--surface);
+
+}
+
+
+.corner,
+.day-header {
+
+  position:
+    sticky;
+
+  top:
+    0;
+
+  z-index:
+    30;
+
+  background:
+    var(--surface);
+
+  border-bottom:
+    1px solid
+    var(--border);
+
+  min-height:
+    58px;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+}
+
+
+.corner {
+
+  left:
+    0;
+
+  z-index:
+    40;
+
+  border-right:
+    1px solid
+    var(--border);
+
+}
+
+
+.day-header {
+
+  font-weight:
+    800;
+
+  font-size:
+    14px;
+
+  border-right:
+    1px solid
+    var(--border);
+
+}
+
+
+.day-header small {
+
+  display:
+    block;
+
+  color:
+    var(--muted);
+
+  font-weight:
+    600;
+
+  font-size:
+    11px;
+
+  margin-top:
+    3px;
+
+  text-align:
+    center;
+
+}
+
+
+.time-label {
+
+  position:
+    sticky;
+
+  left:
+    0;
+
+  z-index:
+    25;
+
+  height:
+    var(--slot-h);
+
+  background:
+    var(--surface);
+
+  border-right:
+    1px solid
+    var(--border);
+
+  border-bottom:
+    1px solid
+    var(--border);
+
+  color:
+    var(--muted);
+
+  font-size:
+    11px;
+
+  padding:
+    7px 6px;
+
+  text-align:
+    right;
+
+}
+
+
+.slot {
+
+  min-height:
+    var(--slot-h);
+
+  border-right:
+    1px solid
+    var(--border);
+
+  border-bottom:
+    1px solid
+    var(--border);
+
+  padding:
+    4px;
+
+  position:
+    relative;
+
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  gap:
+    4px;
+
+}
+
+
+.slot.drag-over {
+
+  background:
+    var(--accentSoft);
+
+  outline:
+    2px solid
+    var(--accent);
+
+  outline-offset:
+    -2px;
+
+}
+
+
+/* ==================================
+   REMINDER CARDS
+================================== */
+
+.card {
+
+  position:
+    relative;
+
+  background:
+    var(--surface);
+
+  border:
+    1px solid
+    var(--border);
+
+  border-radius:
+    10px;
+
+  padding:
+    8px
+    28px
+    8px
+    9px;
+
+  box-shadow:
+    var(--shadow);
+
+  font-size:
+    13px;
+
+  line-height:
+    1.25;
+
+  touch-action:
+    none;
+
+  user-select:
+    none;
+
+  -webkit-user-select:
+    none;
+
+  overflow-wrap:
+    anywhere;
+
+}
+
+
+.card:active {
+
+  transform:
+    scale(.985);
+
+}
+
+
+.card .handle {
+
+  position:
+    absolute;
+
+  right:
+    8px;
+
+  top:
+    7px;
+
+  color:
+    var(--muted);
+
+  font-size:
+    15px;
+
+}
+
+
+.card .meta {
+
+  font-size:
+    10px;
+
+  color:
+    var(--muted);
+
+  margin-top:
+    4px;
+
+}
+
+
+.card.selected {
+
+  outline:
+    2px solid
+    var(--accent);
+
+}
+
+
+.drag-ghost {
+
+  position:
+    fixed;
+
+  z-index:
+    1000;
+
+  pointer-events:
+    none;
+
+  opacity:
+    .93;
+
+  transform:
+    rotate(1deg)
+    scale(1.03);
+
+  width:
+    220px;
+
+  max-width:
+    72vw;
+
+}
+
+
+.empty-note {
+
+  text-align:
+    center;
+
+  color:
+    var(--muted);
+
+  font-size:
+    12px;
+
+  padding:
+    18px 5px;
+
+}
+
+
+/* ==================================
+   MODALS
+================================== */
+
+.modal-backdrop {
+
+  position:
+    fixed;
+
+  inset:
+    0;
+
+  background:
+    rgba(
+      0,
+      0,
+      0,
+      .36
+    );
+
+  z-index:
+    500;
+
+  display:
+    none;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  padding:
+    18px;
+
+}
+
+
+.modal-backdrop.show {
+
+  display:
+    flex;
+
+}
+
+
+.modal {
+
+  width:
+    min(
+      620px,
+      100%
+    );
+
+  max-height:
+    88vh;
+
+  overflow:
+    auto;
+
+  background:
+    var(--surface);
+
+  border-radius:
+    18px;
+
+  padding:
+    16px;
+
+  box-shadow:
+    0 18px 55px
+    rgba(
+      0,
+      0,
+      0,
+      .22
+    );
+
+}
+
+
+.modal h2 {
+
+  margin:
+    0 0 6px;
+
+  font-size:
+    20px;
+
+}
+
+
+.modal p {
+
+  margin:
+    0 0 12px;
+
+  color:
+    var(--muted);
+
+  font-size:
+    13px;
+
+  line-height:
+    1.4;
+
+}
+
+
+.modal textarea,
+.modal input {
+
+  width:
+    100%;
+
+  border:
+    1px solid
+    var(--border);
+
+  background:
+    var(--surface2);
+
+  color:
+    var(--text);
+
+  border-radius:
+    12px;
+
+  padding:
+    11px;
+
+  font-size:
+    16px;
+
+  outline:
+    none;
+
+}
+
+
+.modal textarea {
+
+  min-height:
+    230px;
+
+  resize:
+    vertical;
+
+}
+
+
+.modal-actions {
+
+  display:
+    flex;
+
+  gap:
+    8px;
+
+  justify-content:
+    flex-end;
+
+  margin-top:
+    12px;
+
+}
+
+
+.modal-actions button {
+
+  border:
+    1px solid
+    var(--border);
+
+  background:
+    var(--surface2);
+
+  color:
+    var(--text);
+
+  min-height:
+    42px;
+
+  border-radius:
+    11px;
+
+  padding:
+    0 14px;
+
+  font-weight:
+    700;
+
+}
+
+
+.modal-actions .primary {
+
+  background:
+    var(--accent);
+
+  color:
+    #fff;
+
+  border-color:
+    var(--accent);
+
+}
+
+
+/* ==================================
+   CARD ACTION MENU
+================================== */
+
+.context {
+
+  position:
+    fixed;
+
+  z-index:
+    800;
+
+  background:
+    var(--surface);
+
+  border:
+    1px solid
+    var(--border);
+
+  border-radius:
+    12px;
+
+  padding:
+    5px;
+
+  box-shadow:
+    0 8px 28px
+    rgba(
+      0,
+      0,
+      0,
+      .18
+    );
+
+  display:
+    none;
+
+  min-width:
+    150px;
+
+}
+
+
+.context.show {
+
+  display:
+    block;
+
+}
+
+
+.context button {
+
+  display:
+    block;
+
+  width:
+    100%;
+
+  text-align:
+    left;
+
+  border:
+    0;
+
+  background:
+    transparent;
+
+  color:
+    var(--text);
+
+  padding:
+    9px 10px;
+
+  border-radius:
+    8px;
+
+}
+
+
+.context button:active {
+
+  background:
+    var(--surface2);
+
+}
+
+
+.context button.delete {
+
+  color:
+    var(--danger);
+
+}
+
+
+/* ==================================
+   TOAST MESSAGE
+================================== */
+
+.toast {
+
+  position:
+    fixed;
+
+  z-index:
+    1200;
+
+  left:
+    50%;
+
+  bottom:
+    max(
+      24px,
+      env(safe-area-inset-bottom)
+    );
+
+  transform:
+    translate(
+      -50%,
+      20px
+    );
+
+  opacity:
+    0;
+
+  background:
+    #222;
+
+  color:
+    #fff;
+
+  border-radius:
+    999px;
+
+  padding:
+    9px 13px;
+
+  font-size:
+    13px;
+
+  pointer-events:
+    none;
+
+  transition:
+    .2s;
+
+}
+
+
+.toast.show {
+
+  opacity:
+    1;
+
+  transform:
+    translate(
+      -50%,
+      0
+    );
+
+}
+
+
+/* ==================================
+   PHONE / IPAD LAYOUT
+================================== */
+
+@media (
+  max-width: 800px
+) {
+
+  .toolbar {
+
+    overflow-x:
+      auto;
+
+  }
+
+
+  .brand {
+
+    font-size:
+      16px;
+
+  }
+
+
+  .workspace {
+
+    display:
+      block;
+
+  }
+
+
+  .sidebar {
+
+    width:
+      100%;
+
+    min-width:
+      0;
+
+    height:
+      auto;
+
+    max-height:
+      260px;
+
+    position:
+      relative;
+
+    border-right:
+      0;
+
+    border-bottom:
+      1px solid
+      var(--border);
+
+  }
+
+
+  .unscheduled {
+
+    display:
+      flex;
+
+    gap:
+      7px;
+
+    overflow-x:
+      auto;
+
+    min-height:
+      88px;
+
+    align-items:
+      flex-start;
+
+  }
+
+
+  .unscheduled .card {
+
+    min-width:
+      180px;
+
+    max-width:
+      220px;
+
+  }
+
+
+  .calendar-wrap {
+
+    height:
+      calc(
+        100vh - 330px
+      );
+
+    min-height:
+      420px;
+
+  }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="app">
+
+
+  <!-- =================================
+       TOP TOOLBAR
+  ================================== -->
+
+  <div class="toolbar">
+
+    <div class="brand">
+      Reminder Planner
+    </div>
+
+
+    <button
+      class="primary"
+      id="pasteBtn"
+    >
+      Paste Checklist
+    </button>
+
+
+    <button id="addBtn">
+      + Add
+    </button>
+
+
+    <button id="copyPlanBtn">
+      Copy Plan
+    </button>
+
+
+    <button
+      class="danger"
+      id="clearBtn"
+    >
+      Clear
+    </button>
+
+  </div>
+
+
+  <!-- =================================
+       MAIN WORKSPACE
+  ================================== -->
+
+  <div class="workspace">
+
+
+    <!-- UNSCHEDULED AREA -->
+
+    <aside class="sidebar">
+
+
+      <div class="side-head">
+
+        <div class="side-title">
+          Unscheduled
+        </div>
+
+
+        <span
+          class="badge"
+          id="unscheduledCount"
+        >
+          0
+        </span>
+
+      </div>
+
+
+      <div class="hint">
+
+        Drag anything from here into the calendar.
+
+        Drag it back here to unschedule it.
+
+      </div>
+
+
+      <div
+        class="unscheduled dropzone"
+        id="unscheduled"
+        data-zone="unscheduled"
+      ></div>
+
+
+    </aside>
+
+
+    <!-- CALENDAR -->
+
+    <div
+      class="calendar-wrap"
+      id="calendarWrap"
+    >
+
+      <div
+        class="calendar"
+        id="calendar"
+      ></div>
+
+    </div>
+
+
+  </div>
+
+</div>
+
+
+<!-- =================================
+     PASTE CHECKLIST WINDOW
+================================== -->
+
+<div
+  class="modal-backdrop"
+  id="pasteModal"
+>
+
+  <div class="modal">
+
+    <h2>
+      Paste your checklist
+    </h2>
+
+
+    <p>
+
+      Paste the checklist copied from Scriptable.
+
+      Lines beginning with ☐, •, -, or numbers
+      are cleaned automatically.
+
+    </p>
+
+
+    <textarea
+      id="pasteInput"
+      placeholder="☐ Read Chapter 7
+☐ Review lecture notes
+☐ Finish discussion post"
+    ></textarea>
+
+
+    <div class="modal-actions">
+
+      <button
+        data-close="pasteModal"
+      >
+        Cancel
+      </button>
+
+
+      <button
+        class="primary"
+        id="importBtn"
+      >
+        Add to Planner
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- =================================
+     ADD MANUAL ITEM
+================================== -->
+
+<div
+  class="modal-backdrop"
+  id="addModal"
+>
+
+  <div class="modal">
+
+    <h2>
+      Add an item
+    </h2>
+
+
+    <p>
+
+      This only adds the item to this planning board.
+
+      It does not change Apple Reminders.
+
+    </p>
+
+
+    <input
+      id="addInput"
+      placeholder="Reminder text"
+    >
+
+
+    <div class="modal-actions">
+
+      <button
+        data-close="addModal"
+      >
+        Cancel
+      </button>
+
+
+      <button
+        class="primary"
+        id="addConfirmBtn"
+      >
+        Add
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- =================================
+     CARD MENU
+================================== -->
+
+<div
+  class="context"
+  id="context"
+>
+
+  <button id="ctxEdit">
+    Edit
+  </button>
+
+  <button id="ctxDuplicate">
+    Duplicate
+  </button>
+
+  <button id="ctxUnscheduled">
+    Move to Unscheduled
+  </button>
+
+  <button
+    class="delete"
+    id="ctxDelete"
+  >
+    Delete from Board
+  </button>
+
+</div>
+
+
+<div
+  class="toast"
+  id="toast"
+></div>
+
+
+<script>
+
+(() => {
+
+
+/* ==================================
+   CONFIGURATION
+================================== */
+
+const DAYS = [
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday"
+];
+
+
+const START_HOUR = 7;
+
+
+// Last visible slot begins at 10 PM.
+const END_HOUR = 23;
+
+
+const STORAGE_KEY =
+  "reminderDragPlanner.v1";
+
+
+let items = {};
+
+let contextItemId =
+  null;
+
+let dragging =
+  null;
+
+
+const calendar =
+  document.getElementById(
+    "calendar"
+  );
+
+
+const unscheduled =
+  document.getElementById(
+    "unscheduled"
+  );
+
+
+const unscheduledCount =
+  document.getElementById(
+    "unscheduledCount"
+  );
+
+
+const toast =
+  document.getElementById(
+    "toast"
+  );
+
+
+const context =
+  document.getElementById(
+    "context"
+  );
+
+
+/* ==================================
+   CREATE UNIQUE ID
+================================== */
+
+function uid() {
+
+  if (crypto.randomUUID) {
+
+    return crypto.randomUUID();
+
+  }
+
+
+  return (
+    Date.now()
+      .toString(36)
+
+    +
+
+    Math.random()
+      .toString(36)
+      .slice(2)
+  );
+
+}
+
+
+/* ==================================
+   SAVE BOARD
+================================== */
+
+function save() {
+
+  localStorage.setItem(
+    STORAGE_KEY,
+
+    JSON.stringify({
+      items
+    })
+  );
+
+}
+
+
+/* ==================================
+   LOAD BOARD
+================================== */
+
+function load() {
+
+  try {
+
+    const data =
+      JSON.parse(
+        localStorage.getItem(
+          STORAGE_KEY
+        )
+
+        ||
+
+        "{}"
+      );
+
+
+    items =
+      data.items || {};
+
+  }
+
+  catch {
+
+    items = {};
+
+  }
+
+}
+
+
+/* ==================================
+   FORMAT TIME
+================================== */
+
+function hourLabel(hour) {
+
+  const suffix =
+    hour >= 12
+      ? "PM"
+      : "AM";
+
+
+  const number =
+    hour % 12 || 12;
+
+
+  return (
+    number +
+    " " +
+    suffix
+  );
+
+}
+
+
+/* ==================================
+   CREATE SLOT ID
+================================== */
+
+function slotId(
+  day,
+  hour
+) {
+
+  return (
+    "d" +
+    day +
+    "-h" +
+    hour
+  );
+
+}
+
+
+/* ==================================
+   BUILD BLANK WEEK
+================================== */
+
+function buildCalendar() {
+
+  calendar.innerHTML = "";
+
+
+  /* TIME CORNER */
+
+  const corner =
+    document.createElement(
+      "div"
+    );
+
+
+  corner.className =
+    "corner";
+
+
+  corner.textContent =
+    "Time";
+
+
+  calendar.appendChild(
+    corner
+  );
+
+
+  /* DAY HEADERS */
+
+  DAYS.forEach(
+    (day, index) => {
+
+      const header =
+        document.createElement(
+          "div"
+        );
+
+
+      header.className =
+        "day-header";
+
+
+      header.innerHTML = `
+        <div>
+          ${day}
+
+          <small>
+            Blank day
+          </small>
+        </div>
+      `;
+
+
+      calendar.appendChild(
+        header
+      );
+
+    }
+  );
+
+
+  /* TIME ROWS */
+
+  for (
+    let hour = START_HOUR;
+    hour < END_HOUR;
+    hour++
+  ) {
+
+    const time =
+      document.createElement(
+        "div"
+      );
+
+
+    time.className =
+      "time-label";
+
+
+    time.textContent =
+      hourLabel(hour);
+
+
+    calendar.appendChild(
+      time
+    );
+
+
+    for (
+      let day = 0;
+      day < 7;
+      day++
+    ) {
+
+      const slot =
+        document.createElement(
+          "div"
+        );
+
+
+      slot.className =
+        "slot dropzone";
+
+
+      slot.dataset.zone =
+        slotId(
+          day,
+          hour
+        );
+
+
+      slot.dataset.day =
+        day;
+
+
+      slot.dataset.hour =
+        hour;
+
+
+      calendar.appendChild(
+        slot
+      );
+
+    }
+
+  }
+
+}
+
+
+/* ==================================
+   CREATE REMINDER CARD
+================================== */
+
+function cardElement(item) {
+
+  const element =
+    document.createElement(
+      "div"
+    );
+
+
+  element.className =
+    "card";
+
+
+  element.dataset.id =
+    item.id;
+
+
+  element.innerHTML = `
+
+    <div class="card-title">
+    </div>
+
+    <span class="handle">
+      ⠿
+    </span>
+
+  `;
+
+
+  element
+    .querySelector(
+      ".card-title"
+    )
+    .textContent =
+    item.text;
+
+
+  const meta =
+    document.createElement(
+      "div"
+    );
+
+
+  meta.className =
+    "meta";
+
+
+  if (
+    item.zone !==
+    "unscheduled"
+  ) {
+
+    const match =
+      /^d(\d+)-h(\d+)$/
+        .exec(
+          item.zone
+        );
+
+
+    if (match) {
+
+      meta.textContent =
+
+        DAYS[
+          Number(
+            match[1]
+          )
+        ]
+
+        +
+
+        " · "
+
+        +
+
+        hourLabel(
+          Number(
+            match[2]
+          )
+        );
+
+    }
+
+  }
+
+
+  if (meta.textContent) {
+
+    element.appendChild(
+      meta
+    );
+
+  }
+
+
+  /* DRAG SUPPORT */
+
+  element.addEventListener(
+    "pointerdown",
+    beginDrag
+  );
+
+
+  /* RIGHT CLICK */
+
+  element.addEventListener(
+    "contextmenu",
+    event => {
+
+      event.preventDefault();
+
+
+      showContext(
+        item.id,
+        event.clientX,
+        event.clientY
+      );
+
+    }
+  );
+
+
+  /* NORMAL TAP */
+
+  element.addEventListener(
+    "click",
+    event => {
+
+      // Prevent opening menu after dragging.
+      if (
+        element.dataset
+          .wasDragged === "1"
+      ) {
+
+        element.dataset
+          .wasDragged = "0";
+
+        return;
+
+      }
+
+
+      showContext(
+        item.id,
+
+        event.clientX || 30,
+
+        event.clientY || 100
+      );
+
+    }
+  );
+
+
+  return element;
+
+}
+
+
+/* ==================================
+   RENDER EVERYTHING
+================================== */
+
+function render() {
+
+  document
+    .querySelectorAll(
+      ".slot"
+    )
+    .forEach(
+      slot => {
+
+        slot.innerHTML = "";
+
+      }
+    );
+
+
+  unscheduled.innerHTML =
+    "";
+
+
+  const values =
+    Object.values(items);
+
+
+  values.sort(
+    (a, b) =>
+      (a.created || 0)
+      -
+      (b.created || 0)
+  );
+
+
+  for (
+    const item
+    of values
+  ) {
+
+    const element =
+      cardElement(item);
+
+
+    let target;
+
+
+    if (
+      item.zone ===
+      "unscheduled"
+    ) {
+
+      target =
+        unscheduled;
+
+    }
+
+    else {
+
+      target =
+        document.querySelector(
+          '.dropzone[data-zone="' +
+          item.zone +
+          '"]'
+        );
+
+    }
+
+
+    // If slot no longer exists,
+    // move reminder back to Unscheduled.
+    if (!target) {
+
+      item.zone =
+        "unscheduled";
+
+
+      target =
+        unscheduled;
+
+    }
+
+
+    target.appendChild(
+      element
+    );
+
+  }
+
+
+  const count =
+    values.filter(
+      item =>
+        item.zone ===
+        "unscheduled"
+    )
+    .length;
+
+
+  unscheduledCount.textContent =
+    count;
+
+
+  if (count === 0) {
+
+    const empty =
+      document.createElement(
+        "div"
+      );
+
+
+    empty.className =
+      "empty-note";
+
+
+    empty.textContent =
+      "Paste reminders or drag items back here.";
+
+
+    unscheduled.appendChild(
+      empty
+    );
+
+  }
+
+}
+
+
+/* ==================================
+   CLEAN CHECKLIST LINE
+================================== */
+
+function cleanLine(text) {
+
+  return text
+
+    .replace(
+      /^\\s*[☐☑✅□◻︎◯]\\s*/u,
+      ""
+    )
+
+    .replace(
+      /^\\s*[-–—•*]\\s+/,
+      ""
+    )
+
+    .replace(
+      /^\\s*\\d+[.)]\\s+/,
+      ""
+    )
+
+    .trim();
+
+}
+
+
+/* ==================================
+   IMPORT CHECKLIST
+================================== */
+
+function importText(raw) {
+
+  const lines =
+    raw
+
+      .split(
+        /\\r?\\n/
+      )
+
+      .map(
+        cleanLine
+      )
+
+      .filter(
+        Boolean
+      );
+
+
+  for (
+    const text
+    of lines
+  ) {
+
+    const id =
+      uid();
+
+
+    items[id] = {
+
+      id,
+
+      text,
+
+      zone:
+        "unscheduled",
+
+      created:
+        Date.now()
+        +
+        Math.random()
+
+    };
+
+  }
+
+
+  save();
+
+  render();
+
+
+  showToast(
+
+    lines.length
+
+    +
+
+    " item"
+
+    +
+
+    (
+      lines.length === 1
+        ? ""
+        : "s"
+    )
+
+    +
+
+    " added"
+
+  );
+
+}
+
+
+/* ==================================
+   ADD ONE MANUAL ITEM
+================================== */
+
+function addOne(text) {
+
+  text =
+    text.trim();
+
+
+  if (!text) {
+    return;
+  }
+
+
+  const id =
+    uid();
+
+
+  items[id] = {
+
+    id,
+
+    text,
+
+    zone:
+      "unscheduled",
+
+    created:
+      Date.now()
+
+  };
+
+
+  save();
+
+  render();
+
+}
+
+
+/* ==================================
+   MOVE ITEM
+================================== */
+
+function moveItem(
+  id,
+  zone
+) {
+
+  if (!items[id]) {
+    return;
+  }
+
+
+  items[id].zone =
+    zone;
+
+
+  save();
+
+  render();
+
+}
+
+
+/* ==================================
+   TOAST
+================================== */
+
+function showToast(message) {
+
+  toast.textContent =
+    message;
+
+
+  toast.classList.add(
+    "show"
+  );
+
+
+  setTimeout(
+    () => {
+
+      toast.classList.remove(
+        "show"
+      );
+
+    },
+
+    1200
+  );
+
+}
+
+
+/* ==================================
+   MODALS
+================================== */
+
+function openModal(id) {
+
+  document
+    .getElementById(id)
+    .classList
+    .add("show");
+
+
+  setTimeout(
+    () => {
+
+      const input =
+        document.querySelector(
+
+          "#" +
+          id +
+          " textarea, #" +
+          id +
+          " input"
+
+        );
+
+
+      if (input) {
+
+        input.focus();
+
+      }
+
+    },
+
+    50
+  );
+
+}
+
+
+function closeModal(id) {
+
+  document
+    .getElementById(id)
+    .classList
+    .remove("show");
+
+}
+
+
+document
+  .querySelectorAll(
+    "[data-close]"
+  )
+  .forEach(
+    button => {
+
+      button.onclick =
+        () => {
+
+          closeModal(
+            button.dataset.close
+          );
+
+        };
+
+    }
+  );
+
+
+/* ==================================
+   PASTE CHECKLIST BUTTON
+================================== */
+
+document
+  .getElementById(
+    "pasteBtn"
+  )
+  .onclick =
+  async () => {
+
+    const textarea =
+      document.getElementById(
+        "pasteInput"
+      );
+
+
+    textarea.value =
+      "";
+
+
+    // Some browsers allow direct
+    // clipboard reading.
+    //
+    // If iOS blocks it,
+    // the paste window still opens
+    // and you can manually paste.
+
+    try {
+
+      const text =
+        await navigator
+          .clipboard
+          .readText();
+
+
+      if (text) {
+
+        textarea.value =
+          text;
+
+      }
+
+    }
+
+    catch {
+
+      // Manual paste still works.
+
+    }
+
+
+    openModal(
+      "pasteModal"
+    );
+
+  };
+
+
+/* ==================================
+   IMPORT BUTTON
+================================== */
+
+document
+  .getElementById(
+    "importBtn"
+  )
+  .onclick =
+  () => {
+
+    importText(
+
+      document
+        .getElementById(
+          "pasteInput"
+        )
+        .value
+
+    );
+
+
+    closeModal(
+      "pasteModal"
+    );
+
+  };
+
+
+/* ==================================
+   ADD ITEM BUTTON
+================================== */
+
+document
+  .getElementById(
+    "addBtn"
+  )
+  .onclick =
+  () => {
+
+    document
+      .getElementById(
+        "addInput"
+      )
+      .value =
+      "";
+
+
+    openModal(
+      "addModal"
+    );
+
+  };
+
+
+/* ==================================
+   ADD ITEM CONFIRM
+================================== */
+
+document
+  .getElementById(
+    "addConfirmBtn"
+  )
+  .onclick =
+  () => {
+
+    addOne(
+
+      document
+        .getElementById(
+          "addInput"
+        )
+        .value
+
+    );
+
+
+    closeModal(
+      "addModal"
+    );
+
+  };
+
+
+document
+  .getElementById(
+    "addInput"
+  )
+  .addEventListener(
+
+    "keydown",
+
+    event => {
+
+      if (
+        event.key ===
+        "Enter"
+      ) {
+
+        document
+          .getElementById(
+            "addConfirmBtn"
+          )
+          .click();
+
+      }
+
+    }
+  );
+
+
+/* ==================================
+   CLEAR BOARD
+================================== */
+
+document
+  .getElementById(
+    "clearBtn"
+  )
+  .onclick =
+  () => {
+
+    if (
+      !Object
+        .keys(items)
+        .length
+    ) {
+
+      return;
+
+    }
+
+
+    const confirmed =
+      confirm(
+
+        "Clear every item from this planning board? Your Apple Reminders will not be changed."
+
+      );
+
+
+    if (confirmed) {
+
+      items = {};
+
+
+      save();
+
+      render();
+
+
+      showToast(
+        "Board cleared"
+      );
+
+    }
+
+  };
+
+
+/* ==================================
+   CREATE TEXT VERSION OF PLAN
+================================== */
+
+function planText() {
+
+  const output =
+    [];
+
+
+  DAYS.forEach(
+    (day, dayNumber) => {
+
+      const dayItems =
+        [];
+
+
+      for (
+        let hour = START_HOUR;
+        hour < END_HOUR;
+        hour++
+      ) {
+
+        const zone =
+          slotId(
+            dayNumber,
+            hour
+          );
+
+
+        Object
+          .values(items)
+
+          .filter(
+            item =>
+              item.zone ===
+              zone
+          )
+
+          .forEach(
+            item => {
+
+              dayItems.push(
+
+                hourLabel(hour)
+
+                +
+
+                " — "
+
+                +
+
+                item.text
+
+              );
+
+            }
+          );
+
+      }
+
+
+      if (
+        dayItems.length
+      ) {
+
+        output.push(
+          day.toUpperCase()
+        );
+
+
+        output.push(
+          ...dayItems,
+          ""
+        );
+
+      }
+
+    }
+  );
+
+
+  const remaining =
+    Object
+      .values(items)
+
+      .filter(
+        item =>
+          item.zone ===
+          "unscheduled"
+      );
+
+
+  if (
+    remaining.length
+  ) {
+
+    output.push(
+      "UNSCHEDULED"
+    );
+
+
+    output.push(
+
+      ...remaining.map(
+        item =>
+          "☐ " +
+          item.text
+      )
+
+    );
+
+  }
+
+
+  return output
+    .join("\\n")
+    .trim();
+
+}
+
+
+/* ==================================
+   COPY PLAN
+================================== */
+
+document
+  .getElementById(
+    "copyPlanBtn"
+  )
+  .onclick =
+  async () => {
+
+    const text =
+      planText();
+
+
+    if (!text) {
+
+      showToast(
+        "Nothing to copy"
+      );
+
+      return;
+
+    }
+
+
+    try {
+
+      await navigator
+        .clipboard
+        .writeText(
+          text
+        );
+
+
+      showToast(
+        "Plan copied"
+      );
+
+    }
+
+    catch {
+
+      // Backup copy method.
+
+      const textarea =
+        document.createElement(
+          "textarea"
+        );
+
+
+      textarea.value =
+        text;
+
+
+      document.body
+        .appendChild(
+          textarea
+        );
+
+
+      textarea.select();
+
+
+      document.execCommand(
+        "copy"
+      );
+
+
+      textarea.remove();
+
+
+      showToast(
+        "Plan copied"
+      );
+
+    }
+
+  };
+
+
+/* ==================================
+   DRAG ENGINE
+================================== */
+
+function beginDrag(event) {
+
+  // Only left mouse button on desktop.
+  if (
+    event.button !==
+      undefined
+
+    &&
+
+    event.button !== 0
+  ) {
+
+    return;
+
+  }
+
+
+  const source =
+    event.currentTarget;
+
+
+  const id =
+    source.dataset.id;
+
+
+  if (!items[id]) {
+    return;
+  }
+
+
+  const startX =
+    event.clientX;
+
+
+  const startY =
+    event.clientY;
+
+
+  const pointerId =
+    event.pointerId;
+
+
+  let started =
+    false;
+
+
+  let ghost =
+    null;
+
+
+  let lastZone =
+    null;
+
+
+  source.setPointerCapture?.(
+    pointerId
+  );
+
+
+  /* --------------------------------
+     POINTER MOVED
+  -------------------------------- */
+
+  function onMove(moveEvent) {
+
+    const dx =
+      moveEvent.clientX -
+      startX;
+
+
+    const dy =
+      moveEvent.clientY -
+      startY;
+
+
+    // Do not count tiny finger movement
+    // as a drag.
+
+    if (
+      !started
+
+      &&
+
+      Math.hypot(
+        dx,
+        dy
+      ) < 7
+    ) {
+
+      return;
+
+    }
+
+
+    if (!started) {
+
+      started =
+        true;
+
+
+      source.dataset
+        .wasDragged =
+        "1";
+
+
+      ghost =
+        source.cloneNode(
+          true
+        );
+
+
+      ghost.classList.add(
+        "drag-ghost"
+      );
+
+
+      ghost.style.left =
+        (
+          moveEvent.clientX -
+          25
+        )
+        +
+        "px";
+
+
+      ghost.style.top =
+        (
+          moveEvent.clientY -
+          20
+        )
+        +
+        "px";
+
+
+      document.body
+        .appendChild(
+          ghost
+        );
+
+
+      dragging = {
+        id
+      };
+
+
+      document.body
+        .style
+        .overflow =
+        "hidden";
+
+    }
+
+
+    moveEvent
+      .preventDefault();
+
+
+    ghost.style.left =
+      (
+        moveEvent.clientX -
+        25
+      )
+      +
+      "px";
+
+
+    ghost.style.top =
+      (
+        moveEvent.clientY -
+        20
+      )
+      +
+      "px";
+
+
+    // Hide ghost momentarily so
+    // elementFromPoint finds whatever
+    // is underneath your finger.
+
+    ghost.style.display =
+      "none";
+
+
+    const below =
+      document.elementFromPoint(
+
+        moveEvent.clientX,
+        moveEvent.clientY
+
+      );
+
+
+    ghost.style.display =
+      "";
+
+
+    const zoneElement =
+      below
+        ?.closest
+        ?.(".dropzone");
+
+
+    document
+      .querySelectorAll(
+        ".drag-over"
+      )
+      .forEach(
+        element => {
+
+          element
+            .classList
+            .remove(
+              "drag-over"
+            );
+
+        }
+      );
+
+
+    if (zoneElement) {
+
+      zoneElement
+        .classList
+        .add(
+          "drag-over"
+        );
+
+
+      lastZone =
+        zoneElement
+          .dataset
+          .zone;
+
+    }
+
+    else {
+
+      lastZone =
+        null;
+
+    }
+
+
+    /* ------------------------------
+       AUTO SCROLL CALENDAR
+    ------------------------------ */
+
+    const wrapper =
+      document
+        .getElementById(
+          "calendarWrap"
+        );
+
+
+    const rectangle =
+      wrapper
+        .getBoundingClientRect();
+
+
+    const edge =
+      48;
+
+
+    if (
+      moveEvent.clientX >
+      rectangle.right -
+      edge
+    ) {
+
+      wrapper.scrollLeft +=
+        14;
+
+    }
+
+    else if (
+      moveEvent.clientX <
+      rectangle.left +
+      edge
+    ) {
+
+      wrapper.scrollLeft -=
+        14;
+
+    }
+
+
+    if (
+      moveEvent.clientY >
+      rectangle.bottom -
+      edge
+    ) {
+
+      wrapper.scrollTop +=
+        14;
+
+    }
+
+    else if (
+      moveEvent.clientY <
+      rectangle.top +
+      edge
+    ) {
+
+      wrapper.scrollTop -=
+        14;
+
+    }
+
+  }
+
+
+  /* --------------------------------
+     DRAG FINISHED
+  -------------------------------- */
+
+  function finish() {
+
+    source
+      .releasePointerCapture
+      ?.(
+        pointerId
+      );
+
+
+    source
+      .removeEventListener(
+        "pointermove",
+        onMove
+      );
+
+
+    source
+      .removeEventListener(
+        "pointerup",
+        finish
+      );
+
+
+    source
+      .removeEventListener(
+        "pointercancel",
+        finish
+      );
+
+
+    document
+      .querySelectorAll(
+        ".drag-over"
+      )
+      .forEach(
+        element => {
+
+          element
+            .classList
+            .remove(
+              "drag-over"
+            );
+
+        }
+      );
+
+
+    document.body
+      .style
+      .overflow =
+      "";
+
+
+    if (ghost) {
+
+      ghost.remove();
+
+    }
+
+
+    dragging =
+      null;
+
+
+    if (
+      started
+      &&
+      lastZone
+    ) {
+
+      moveItem(
+        id,
+        lastZone
+      );
+
+    }
+
+  }
+
+
+  source.addEventListener(
+
+    "pointermove",
+
+    onMove,
+
+    {
+      passive: false
+    }
+
+  );
+
+
+  source.addEventListener(
+    "pointerup",
+    finish
+  );
+
+
+  source.addEventListener(
+    "pointercancel",
+    finish
+  );
+
+}
+
+
+/* ==================================
+   ITEM ACTION MENU
+================================== */
+
+function showContext(
+  id,
+  x,
+  y
+) {
+
+  contextItemId =
+    id;
+
+
+  context.classList
+    .add(
+      "show"
+    );
+
+
+  const width =
+    170;
+
+
+  const height =
+    170;
+
+
+  context.style.left =
+
+    Math.min(
+
+      x,
+
+      innerWidth -
+      width -
+      8
+
+    )
+
+    +
+
+    "px";
+
+
+  context.style.top =
+
+    Math.min(
+
+      y,
+
+      innerHeight -
+      height -
+      8
+
+    )
+
+    +
+
+    "px";
+
+}
+
+
+function hideContext() {
+
+  context
+    .classList
+    .remove(
+      "show"
+    );
+
+}
+
+
+/* Close menu when tapping elsewhere */
+
+document.addEventListener(
+
+  "pointerdown",
+
+  event => {
+
+    if (
+
+      !context.contains(
+        event.target
+      )
+
+      &&
+
+      !event.target
+        .closest(
+          ".card"
+        )
+
+    ) {
+
+      hideContext();
+
+    }
+
+  }
+
+);
+
+
+/* ==================================
+   EDIT CARD
+================================== */
+
+document
+  .getElementById(
+    "ctxEdit"
+  )
+  .onclick =
+  () => {
+
+    const item =
+      items[
+        contextItemId
+      ];
+
+
+    if (!item) {
+      return;
+    }
+
+
+    const text =
+      prompt(
+        "Edit item:",
+        item.text
+      );
+
+
+    if (
+      text !== null
+      &&
+      text.trim()
+    ) {
+
+      item.text =
+        text.trim();
+
+
+      save();
+
+      render();
+
+    }
+
+
+    hideContext();
+
+  };
+
+
+/* ==================================
+   DUPLICATE CARD
+================================== */
+
+document
+  .getElementById(
+    "ctxDuplicate"
+  )
+  .onclick =
+  () => {
+
+    const item =
+      items[
+        contextItemId
+      ];
+
+
+    if (!item) {
+      return;
+    }
+
+
+    const id =
+      uid();
+
+
+    items[id] = {
+
+      id,
+
+      text:
+        item.text,
+
+      zone:
+        item.zone,
+
+      created:
+        Date.now()
+
+    };
+
+
+    save();
+
+    render();
+
+    hideContext();
+
+
+    showToast(
+      "Duplicated"
+    );
+
+  };
+
+
+/* ==================================
+   MOVE TO UNSCHEDULED
+================================== */
+
+document
+  .getElementById(
+    "ctxUnscheduled"
+  )
+  .onclick =
+  () => {
+
+    if (
+      contextItemId
+    ) {
+
+      moveItem(
+
+        contextItemId,
+
+        "unscheduled"
+
+      );
+
+    }
+
+
+    hideContext();
+
+  };
+
+
+/* ==================================
+   DELETE FROM BOARD
+================================== */
+
+document
+  .getElementById(
+    "ctxDelete"
+  )
+  .onclick =
+  () => {
+
+    if (
+
+      contextItemId
+
+      &&
+
+      items[
+        contextItemId
+      ]
+
+    ) {
+
+      delete items[
+        contextItemId
+      ];
+
+
+      save();
+
+      render();
+
+    }
+
+
+    hideContext();
+
+  };
+
+
+/* ==================================
+   START APP
+================================== */
+
+load();
+
+buildCalendar();
+
+render();
+
+
+})();
+
+</script>
+
+
+</body>
+
+</html>
